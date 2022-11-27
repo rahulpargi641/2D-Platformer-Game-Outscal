@@ -7,12 +7,15 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField]
     LayerMask platformLayerMask;
+    [SerializeField]
+    Transform deadPos;
 
     public Animator animator;
+    public float speed;
+    public float jumpForce;
+
     BoxCollider2D boxcollider2d;
     Rigidbody2D rigidbody2d;
-    public float speed;
-    public float jump;
     Vector2 size;
     Vector2 offset;
     private void Awake()
@@ -28,10 +31,23 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float speedX = Input.GetAxisRaw("Horizontal");
-        float speedY = Input.GetAxisRaw("Vertical");
-        PlayerMovement(speedX, speedY);
-        PlayerMovementAnimation(speedX, speedY);
+        if(!Dead())
+        {
+            float speedX = Input.GetAxisRaw("Horizontal");
+            float speedY = Input.GetAxisRaw("Vertical");
+            PlayerMovement(speedX, speedY);
+            PlayerMovementAnimation(speedX, speedY);
+        }
+    }
+
+    private bool Dead()
+    {
+        if (transform.position.y < deadPos.position.y)
+        {
+            Debug.Log("Player Dead"); 
+            return true;
+        }
+        else return false;
     }
 
     private void PlayerMovement(float speedX, float speedY)
@@ -44,23 +60,33 @@ public class PlayerController : MonoBehaviour
     {
         if(speedY > 0 && IsGrounded())
         {
-            rigidbody2d.AddForce(new Vector2(0f, jump), ForceMode2D.Impulse);
+            rigidbody2d.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse);
         }
     }
+    private void PlayerHorizontalMovement(float speedX)
+    {
+        if(IsGrounded())
+        {
+            Vector3 position = transform.position;
+            position.x = transform.position.x + speedX * speed * Time.deltaTime;
+            transform.position = position;
+        }
+        else
+        {
+            Vector3 position = transform.position;
+            position.x = transform.position.x + speedX * speed/5 *Time.deltaTime;
+            transform.position = position;
+        }
+        
+    }
+
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit2d = Physics2D.BoxCast(boxcollider2d.bounds.center, boxcollider2d.bounds.size, 0f, Vector2.down, 0.06f, platformLayerMask);
-        Debug.Log(raycastHit2d.collider);
+        RaycastHit2D raycastHit2d = Physics2D.BoxCast(boxcollider2d.bounds.center, boxcollider2d.bounds.size, 0f, Vector2.down, 0.6f, platformLayerMask);
+        Debug.Log(raycastHit2d.collider);   
         return raycastHit2d.collider != null;
        
-    }
-
-    private void PlayerHorizontalMovement(float speedX)
-    {
-        Vector3 position = transform.position;
-        position.x = transform.position.x + speedX * Time.deltaTime;
-        transform.position = position;
     }
 
     private void PlayerMovementAnimation(float speedX, float speedY)
@@ -113,4 +139,6 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Crouch", false);
         }
     }
+
 }
+
