@@ -14,8 +14,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float moveSpeed;
     [SerializeField] float jumpSpeed;
 
-    BoxCollider2D boxcollider2d;
-    Rigidbody2D rigidbody2d;
+    CapsuleCollider2D playerCapsuleCollider2d;
+    Rigidbody2D playerRigidbody2d;
     Animator animator;
 
     Vector2 boxCollidersize;
@@ -26,12 +26,12 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        rigidbody2d = GetComponent<Rigidbody2D>();
-        boxcollider2d = GetComponent<BoxCollider2D>();
+        playerRigidbody2d = GetComponent<Rigidbody2D>();
+        playerCapsuleCollider2d = GetComponent<CapsuleCollider2D>();
         animator = GetComponent<Animator>();
         
-        boxCollidersize = boxcollider2d.size;
-        boxCollideroffset = boxcollider2d.offset;
+        boxCollidersize = playerCapsuleCollider2d.size;
+        boxCollideroffset = playerCapsuleCollider2d.offset;
     }
 
     void Update()
@@ -84,13 +84,13 @@ public class PlayerController : MonoBehaviour
     {
         if(speedY > 0 && IsGrounded())
         {
-            rigidbody2d.AddForce(new Vector2(0f, jumpSpeed), ForceMode2D.Impulse);
+            playerRigidbody2d.AddForce(new Vector2(0f, jumpSpeed), ForceMode2D.Impulse);
         }
     }
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit2d = Physics2D.BoxCast(boxcollider2d.bounds.center, boxcollider2d.bounds.size, 0f, Vector2.down, 0.6f, platformLayerMask);
+        RaycastHit2D raycastHit2d = Physics2D.BoxCast(playerCapsuleCollider2d.bounds.center, playerCapsuleCollider2d.bounds.size, 0f, Vector2.down, 0.6f, platformLayerMask);
         Debug.Log(raycastHit2d.collider);   
         return raycastHit2d.collider != null; 
     }
@@ -127,13 +127,13 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftControl))
         {
             animator.SetBool("Crouch", true);
-            boxcollider2d.size = new Vector2(boxCollidersize.x, boxCollidersize.y / 2);
-            boxcollider2d.offset = new Vector2(boxCollideroffset.x, boxCollideroffset.y - boxCollideroffset.y / 2);
+            playerCapsuleCollider2d.size = new Vector2(boxCollidersize.x, boxCollidersize.y / 2);
+            playerCapsuleCollider2d.offset = new Vector2(boxCollideroffset.x, boxCollideroffset.y - boxCollideroffset.y / 2);
         }
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-            boxcollider2d.size = boxCollidersize;
-            boxcollider2d.offset = boxCollideroffset;
+            playerCapsuleCollider2d.size = boxCollidersize;
+            playerCapsuleCollider2d.offset = boxCollideroffset;
             animator.SetBool("Crouch", false);
         }
     }
