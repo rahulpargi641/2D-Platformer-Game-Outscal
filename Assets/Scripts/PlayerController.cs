@@ -2,6 +2,7 @@
 //using System.Collections;
 //using System.Collections.Generic;
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,7 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Vector2 playerDeadIfBelowPos;
     [SerializeField] float moveSpeed;
     [SerializeField] float jumpSpeed;
-
+ 
     CapsuleCollider2D playerCapsuleCollider2d;
     Rigidbody2D playerRigidbody2d;
     Animator animator;
@@ -42,20 +43,22 @@ public class PlayerController : MonoBehaviour
         float speedY = Input.GetAxisRaw("Vertical");
         PlayerMovement(speedX, speedY);
         PlayerMovementAnimation(speedX, speedY);
+
         DidPlayerJumpOff();
     }
 
+   
     private void PlayerMovement(float speedX, float speedY)
     {
-        PlayerHorizontalMovement(speedX);
-        PlayerVerticalMovement(speedY);
+        PlayerRun(speedX);
+        PlayerJump(speedY);
     }
 
     private void PlayerMovementAnimation(float speedX, float speedY)
     {
-        RunAnimation(speedX);
-        JumpAnimation(speedY);
-        CrouchAnimation();
+        PlayerRunAnimation(speedX);
+        PlayerJumpAnimation(speedY);
+        PlayerCrouchAnimation();
     }
 
     private void DidPlayerJumpOff()
@@ -65,7 +68,7 @@ public class PlayerController : MonoBehaviour
             alive = false;
         }
     }
-    private void PlayerHorizontalMovement(float speedX)
+    private void PlayerRun(float speedX)
     {
         if (IsGrounded())
         {
@@ -80,7 +83,10 @@ public class PlayerController : MonoBehaviour
             transform.position = position;
         }
     }
-    private void PlayerVerticalMovement(float speedY)
+
+   
+
+    private void PlayerJump(float speedY)
     {
         if(speedY > 0 && IsGrounded())
         {
@@ -91,11 +97,11 @@ public class PlayerController : MonoBehaviour
     private bool IsGrounded()
     {
         RaycastHit2D raycastHit2d = Physics2D.BoxCast(playerCapsuleCollider2d.bounds.center, playerCapsuleCollider2d.bounds.size, 0f, Vector2.down, 0.6f, platformLayerMask);
-        Debug.Log(raycastHit2d.collider);   
+        //Debug.Log(raycastHit2d.collider);   
         return raycastHit2d.collider != null; 
     }
 
-    private void RunAnimation(float speedX)
+    private void PlayerRunAnimation(float speedX)
     {
         animator.SetFloat("Speed", Mathf.Abs(speedX));
         Vector3 scale = transform.localScale;
@@ -110,7 +116,7 @@ public class PlayerController : MonoBehaviour
         transform.localScale = scale;
     }
 
-    private void JumpAnimation(float speedY)
+    private void PlayerJumpAnimation(float speedY)
     {
         if(speedY > 0 && IsGrounded())
         {
@@ -122,7 +128,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void CrouchAnimation()
+    private void PlayerCrouchAnimation()
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
@@ -172,6 +178,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerDead()
     {
         alive = false;
+        SoundManager.Instance.PlayMusic(Sounds.PlayerDeath);
         DeadAnimation();
         gameOverController.ActivateGameOverPanel();
         this.enabled = false;
@@ -179,6 +186,12 @@ public class PlayerController : MonoBehaviour
     private void DeadAnimation()
     {
         animator.SetTrigger("Dead");
+    }
+
+
+    void HandlePlayerFootsteps()
+    {
+        SoundManager.Instance.PlayPlayerFootstepsSound(Sounds.PlayerFootsteps);
     }
 }
 

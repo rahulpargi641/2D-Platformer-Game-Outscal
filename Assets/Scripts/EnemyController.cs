@@ -31,6 +31,12 @@ public class EnemyController : MonoBehaviour
         }
     }
 
+    void PatrolSound()
+    {
+        SoundManager.Instance.PlayEnemyPatrolSound(Sounds.EnemyPatrol);
+    }
+
+ 
     bool IsFacingRight()
     {
         return transform.localScale.x > Mathf.Epsilon;
