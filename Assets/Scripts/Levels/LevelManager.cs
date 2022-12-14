@@ -14,10 +14,10 @@ public class LevelManager : MonoBehaviour
         {
             instance = this;
 
-            foreach (string level in Levels)
-            {
-                SetLevelStatus(level, E_LevelStatus.Locked);
-            }
+            //foreach (string level in Levels)
+            //{
+            //    SetLevelStatus(level, E_LevelStatus.Locked);
+            //}                                 // for testing if level unlocked
 
             DontDestroyOnLoad(gameObject);
         }

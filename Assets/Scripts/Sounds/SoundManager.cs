@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class SoundManager : MonoBehaviour
 {
     public bool IsMute = false;
@@ -11,13 +8,15 @@ public class SoundManager : MonoBehaviour
     private static SoundManager instance;
     public static SoundManager Instance { get { return instance; } }
 
-    public AudioSource soundEffect;
-    public AudioSource soundMusic;
-    public AudioSource audioSourcePlayerFootSteps;
-    public AudioSource audioEnemyPatrol;
-    public SoundType[] Sounds;
-
-
+    public AudioSource audioButtonClick;
+    public AudioSource audioBgMusic;
+    public AudioSource audioPlayerRun;
+    public AudioSource audioEnemyWalk;
+    public AudioSource audioLevelRelated;
+    public AudioSource audioInteract;
+    public AudioSource audioPlayerRelated;
+    public SoundType[] m_SoundType;
+ 
     private void Awake()
     {
         if(instance == null)
@@ -34,15 +33,16 @@ public class SoundManager : MonoBehaviour
     private void Start()
     {
         SetMusicVolume(0.1f);
-        PlayMusic(global::Sounds.Music);
+        PlayBgMusic(ESounds.BackgroundMusic);
     }
-    public void Play(Sounds sound)
+    public void PlayButtonClickSound(ESounds sound)
     {
         if (IsMute) return;
+
         AudioClip clip = GetSoundClip(sound);
         if(clip != null)
         {
-            soundEffect.PlayOneShot(clip);
+            audioButtonClick.PlayOneShot(clip);
         }
         else
         {
@@ -50,13 +50,13 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public void PlayEnemyPatrolSound(Sounds sound)
+    public void PlayEnemyPatrolSound(ESounds sound)
     {
         if (IsMute) return;
         AudioClip clip = GetSoundClip(sound);
         if (clip != null)
         {
-            audioEnemyPatrol.PlayOneShot(clip);
+            audioEnemyWalk.PlayOneShot(clip);
         }
         else
         {
@@ -66,28 +66,42 @@ public class SoundManager : MonoBehaviour
     }
 
 
-    public void PlayPlayerFootstepsSound(Sounds sound)
+    public void PlayPlayerFootstepsSound(ESounds sound)
     {
         if (IsMute) return;
         AudioClip clip = GetSoundClip(sound);
         if (clip != null)
         {
-            audioSourcePlayerFootSteps.PlayOneShot(clip);
+            audioPlayerRun.PlayOneShot(clip);
         }
         else
         {
             Debug.LogError("Clip not found for sound types" + sound);
         }
     }
-    public void PlayMusic(Sounds sound)
+
+    public void PlayPlayerRelatedSound(ESounds sound)
+    {
+        if (IsMute) return;
+        AudioClip clip = GetSoundClip(sound);
+        if (clip != null)
+        {
+            audioPlayerRelated.PlayOneShot(clip);
+        }
+        else
+        {
+            Debug.LogError("Clip not found for sound types" + sound);
+        }
+    }
+    public void PlayBgMusic(ESounds sound)
     {
         if (IsMute) return;
 
         AudioClip clip = GetSoundClip(sound);
         if(clip!=null)
         {
-            soundMusic.clip = clip;
-            soundMusic.Play();
+            audioBgMusic.clip = clip;
+            audioBgMusic.Play();
         }
         else
         {
@@ -95,41 +109,59 @@ public class SoundManager : MonoBehaviour
         }
     }
 
+    public void PlayLevelCompleteMusic(ESounds sound)
+    {
+        if (IsMute) return;
+
+        AudioClip clip = GetSoundClip(sound);
+        if (clip != null)
+        {
+            audioLevelRelated.clip = clip;
+            audioLevelRelated.Play();
+        }
+        else
+        {
+            Debug.LogError("Level COmplete Clip not found for sound types" + sound);
+        }
+    }
+
     public void SetMusicVolume(float volume)
     {
         MusicVolume = volume;
-        soundMusic.volume = volume;
+        audioBgMusic.volume = volume;
     }
 
     public void SetSFXVolume(float volume)
     {
         SFXVoulume = volume;
-        soundEffect.volume = volume;
+        audioButtonClick.volume = volume;
     }
     public void Mute(bool status)
     {
         IsMute = status;
     }
-    private AudioClip GetSoundClip(Sounds sound)
+    private AudioClip GetSoundClip(ESounds sound)
     {
-        SoundType item = Array.Find(Sounds, i => i.soundTypes == sound);
-        if(item !=null)
-        {
-            return item.soundClip;
-        }
+        SoundType item = Array.Find(m_SoundType, item => item.ES_Sound == sound);
+        if (item != null)
+            return item.m_AudioClip;
         else
-        return null;
+            return null;
     }
 }
 
 [Serializable] 
 public class SoundType
 {
-    public Sounds soundTypes;
-    public AudioClip soundClip;
+    public ESounds ES_Sound;
+    public AudioClip m_AudioClip;
 }
 
-public enum Sounds
+public enum ESounds
 {
-    ButtonClick, PlayerDeath, EnemyDeath, Music, PlayerFootsteps, EnemyPatrol
+    PlayerRun, PlayerHurt, PlayerDie,
+    ChomperWalk, ChomperRun, ChomperAttack,
+    MenuButtonClick, MenuButtonStart, MenuButtonSelectLevel,
+    EnviornmentalAmbiance, BackgroundMusic, LevelComplete, LevelFailed,
+    keyPickup
 }

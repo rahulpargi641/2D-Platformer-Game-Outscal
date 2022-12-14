@@ -1,10 +1,4 @@
-//using System;
-//using System.Collections;
-//using System.Collections.Generic;
-using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpSpeed;
  
     CapsuleCollider2D playerCapsuleCollider2d;
+    BoxCollider2D m_BoxCollider2D;
     Rigidbody2D playerRigidbody2d;
     Animator animator;
 
@@ -23,12 +18,13 @@ public class PlayerController : MonoBehaviour
     Vector2 boxCollideroffset;
 
     bool alive = true;
-    int hearts = 3;
+    int hearts = 10;
 
     private void Awake()
     {
         playerRigidbody2d = GetComponent<Rigidbody2D>();
         playerCapsuleCollider2d = GetComponent<CapsuleCollider2D>();
+        m_BoxCollider2D = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
         
         boxCollidersize = playerCapsuleCollider2d.size;
@@ -46,8 +42,6 @@ public class PlayerController : MonoBehaviour
 
         DidPlayerJumpOff();
     }
-
-   
     private void PlayerMovement(float speedX, float speedY)
     {
         PlayerRun(speedX);
@@ -79,12 +73,10 @@ public class PlayerController : MonoBehaviour
         else  // in the air slow movement in x direction
         {
             Vector3 position = transform.position;
-            position.x = transform.position.x + speedX * moveSpeed / 3 * Time.deltaTime;
+            position.x = transform.position.x + speedX * moveSpeed / 2 * Time.deltaTime;
             transform.position = position;
         }
     }
-
-   
 
     private void PlayerJump(float speedY)
     {
@@ -96,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit2d = Physics2D.BoxCast(playerCapsuleCollider2d.bounds.center, playerCapsuleCollider2d.bounds.size, 0f, Vector2.down, 0.6f, platformLayerMask);
+        RaycastHit2D raycastHit2d = Physics2D.BoxCast(m_BoxCollider2D.bounds.center, m_BoxCollider2D.bounds.size, 0f, Vector2.down, 0.5f, platformLayerMask);
         //Debug.Log(raycastHit2d.collider);   
         return raycastHit2d.collider != null; 
     }
@@ -149,26 +141,20 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Key Picked up");
         scoreController.IncreaseScore(10);
     }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.GetComponent<EnemyController>()!=null)
-        {
-            DealDamage();
-        }
-    }
-     void DealDamage()
+     public void DealDamage()
     {
         if (!alive) return;
 
         hearts -= 1;
-        Debug.Log("hearts: " + hearts);
+        Debug.Log("Player had been hurt , hearts: " + hearts);
+        SoundManager.Instance.PlayPlayerRelatedSound(ESounds.PlayerHurt);
 
         HurtAnimation();
 
-        if (hearts < 1)
+        if (hearts < 0)
         {
             PlayerDead();
+            //SoundManager.Instance.pla
         }
     }
     void HurtAnimation()
@@ -177,8 +163,9 @@ public class PlayerController : MonoBehaviour
     }
     private void PlayerDead()
     {
+        Debug.Log("Player Dead!");
         alive = false;
-        SoundManager.Instance.PlayMusic(Sounds.PlayerDeath);
+        SoundManager.Instance.PlayPlayerRelatedSound(ESounds.PlayerDie);
         DeadAnimation();
         gameOverController.ActivateGameOverPanel();
         this.enabled = false;
@@ -189,9 +176,18 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void HandlePlayerFootsteps()
+    void HandlePlayerFootsteps() // in the animation
     {
-        SoundManager.Instance.PlayPlayerFootstepsSound(Sounds.PlayerFootsteps);
+        SoundManager.Instance.PlayPlayerFootstepsSound(ESounds.PlayerRun);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.GetComponent<EnemyController>() != null)
+        {
+            Debug.Log(collision.gameObject.name);
+            DealDamage();
+        }
     }
 }
 

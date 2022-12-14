@@ -31,8 +31,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 155173800000418136}
-  - {fileID: 155173799064584944}
   - {fileID: 9215160815708922458}
+  - {fileID: 155173799064584944}
   - {fileID: 2439760216966624450}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -418,7 +418,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 155173799054074434}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -588,7 +588,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 69bc2f0c47ae84d4e98f1db95994d6e3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -605,6 +605,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 155173799054074434}
     m_Modifications:
+    - target: {fileID: 4683787028797619056, guid: 9e886ab4e334cf845816820fdf2fcf6f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -147
+      objectReference: {fileID: 0}
     - target: {fileID: 4683787029067776519, guid: 9e886ab4e334cf845816820fdf2fcf6f,
         type: 3}
       propertyPath: quitButton
@@ -623,7 +628,7 @@ PrefabInstance:
     - target: {fileID: 4683787029067776570, guid: 9e886ab4e334cf845816820fdf2fcf6f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4683787029067776570, guid: 9e886ab4e334cf845816820fdf2fcf6f,
         type: 3}
@@ -698,7 +703,7 @@ PrefabInstance:
     - target: {fileID: 4683787029067776570, guid: 9e886ab4e334cf845816820fdf2fcf6f,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 79.9
+      value: 59
       objectReference: {fileID: 0}
     - target: {fileID: 4683787029067776570, guid: 9e886ab4e334cf845816820fdf2fcf6f,
         type: 3}
@@ -719,6 +724,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Game Over Panel
+      objectReference: {fileID: 0}
+    - target: {fileID: 4683787029103731272, guid: 9e886ab4e334cf845816820fdf2fcf6f,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -101
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9e886ab4e334cf845816820fdf2fcf6f, type: 3}

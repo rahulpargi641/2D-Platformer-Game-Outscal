@@ -3,23 +3,26 @@ using UnityEngine.UI;
 
 public class LobbyController : MonoBehaviour
 {
-    public Button buttonStart;
+    public Button startButton;
     public Button quitButton;
-    public GameObject LevelSelection;
+    [SerializeField] GameObject InitialScreen;
+    [SerializeField] GameObject LevelSelection;
     private void Awake()
     {
-       buttonStart.onClick.AddListener(PlayGame);
+       startButton.onClick.AddListener(PlayGame);
        quitButton.onClick.AddListener(QuitGame);
     }
 
     private void PlayGame()
     {
         //SceneManager.LoadScene(1);
-        SoundManager.Instance.Play(Sounds.ButtonClick);
+        SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonStart);
+        InitialScreen.SetActive(false);
         LevelSelection.SetActive(true);
     }
     private void QuitGame()
     {
         Application.Quit();
+        SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonClick);
     }
 }

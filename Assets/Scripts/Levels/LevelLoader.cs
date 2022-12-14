@@ -1,48 +1,37 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System;
 
 [RequireComponent(typeof(Button))]
 public class LevelLoader : MonoBehaviour
 {
-    Button buttonstartGame;
-    Button buttonQuitGame;
+    Button buttonLoadLevel;
     public string LevelName;
     private void Awake()
     {
-        buttonstartGame = GetComponent<Button>();
-        buttonstartGame.onClick.AddListener(OnClickStartGameButton);
+        buttonLoadLevel = GetComponent<Button>();
+        buttonLoadLevel.onClick.AddListener(OnClickLoadLevelButton);
     }
 
-    private void OnClickStartGameButton()
+    private void OnClickLoadLevelButton()
     {
         E_LevelStatus levelStatus = LevelManager.Instance.GetLevelStatus(LevelName);
         switch(levelStatus)
         {
             case E_LevelStatus.Locked:
                 Debug.Log("Can't play level till you unlock it");
+                SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonClick);
                 break;
 
             case E_LevelStatus.Unlocked:
-                SoundManager.Instance.Play(Sounds.ButtonClick);
+                SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonSelectLevel);
                 SceneManager.LoadScene(LevelName);
                 break;
 
             case E_LevelStatus.Completed:
-                SoundManager.Instance.Play(Sounds.ButtonClick);
+                SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonSelectLevel);
                 SceneManager.LoadScene(LevelName);
                 break;
-        }
-    }
-
-    public void LoadLevelIfUnlocked() // Button will use this function
-    {
-        if(LevelManager.Instance.GetLevelStatus(LevelName) == E_LevelStatus.Completed)
-        {
-            SceneManager.LoadScene(LevelName);
         }
     }
 }
