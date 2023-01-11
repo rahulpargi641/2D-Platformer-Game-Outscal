@@ -11,12 +11,11 @@ public class EnemyAI : MonoBehaviour
     {
         if (CanMove)
         {
-            MoveEnemy();
+            ProcessEnemyTranslation();
         }
-    
     }
 
-    public void MoveEnemy()
+    public void ProcessEnemyTranslation()
     {
         if (parentTransform.localScale.x > Mathf.Epsilon)
         {
@@ -32,10 +31,10 @@ public class EnemyAI : MonoBehaviour
     {
         if(collision.tag == "Platform")
         {
-            Flip();
+            ProcessEnemyFlip();
         }
     }
-    private void Flip()
+    private void ProcessEnemyFlip()
     {
         parentTransform.localScale = new Vector2(-Mathf.Sign(parentRigidbody2D.velocity.x), Mathf.Sign(parentRigidbody2D.velocity.y));
     }

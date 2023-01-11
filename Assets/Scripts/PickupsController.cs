@@ -6,8 +6,8 @@ public class PickupsController : MonoBehaviour
     {
         if(collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            PlayerController playerContrller = collision.gameObject.GetComponent<PlayerController>();
-            playerContrller.PickupKey();
+            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+            playerController.ProcessPlayerPickingupKey();
             Destroy(gameObject);
         }
     }

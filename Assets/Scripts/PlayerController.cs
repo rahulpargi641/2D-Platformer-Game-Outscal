@@ -5,97 +5,97 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ScoreController scoreController;
     [SerializeField] GameOverController gameOverController;
     [SerializeField] LayerMask platformLayerMask;
-    [SerializeField] Vector2 playerDeadIfBelowPos;
-    [SerializeField] float moveSpeed;
-    [SerializeField] float jumpSpeed;
+    [SerializeField] Vector2 m_PlayerDeadIfBelowPos;
+    [SerializeField] float m_MoveSpeed;
+    [SerializeField] float m_JumpSpeed;
  
-    CapsuleCollider2D playerCapsuleCollider2d;
-    BoxCollider2D m_BoxCollider2D;
-    Rigidbody2D playerRigidbody2d;
-    Animator animator;
+    CapsuleCollider2D m_PlayerCapsuleCollider2D;
+    BoxCollider2D m_PlayerFeetBoxCollider2D;
+    Rigidbody2D m_PlayerRigidbody2D;
+    Animator m_Animator;
 
-    Vector2 boxCollidersize;
-    Vector2 boxCollideroffset;
+    Vector2 m_CapsuleColliderSize;
+    Vector2 m_CapsuleColliderOffset;
 
-    bool alive = true;
-    int hearts = 10;
+    bool m_Alive;
+    bool m_PlayerOnTheGround;
+    int m_HeartCount;
 
     private void Awake()
     {
-        playerRigidbody2d = GetComponent<Rigidbody2D>();
-        playerCapsuleCollider2d = GetComponent<CapsuleCollider2D>();
-        m_BoxCollider2D = GetComponent<BoxCollider2D>();
-        animator = GetComponent<Animator>();
+        m_PlayerRigidbody2D = GetComponent<Rigidbody2D>();
+        m_PlayerCapsuleCollider2D = GetComponent<CapsuleCollider2D>();
+        m_PlayerFeetBoxCollider2D = GetComponentInChildren<BoxCollider2D>();
+        m_Animator = GetComponent<Animator>();
         
-        boxCollidersize = playerCapsuleCollider2d.size;
-        boxCollideroffset = playerCapsuleCollider2d.offset;
+        m_CapsuleColliderSize = m_PlayerCapsuleCollider2D.size;
+        m_CapsuleColliderOffset = m_PlayerCapsuleCollider2D.offset;
+
+        m_Alive = true;
+        m_PlayerOnTheGround = true;
+        m_HeartCount = 10;
     }
 
-    void Update()
+    private void Update()
     {
-        if (!alive) return;
+        if (!m_Alive) return;
 
         float speedX = Input.GetAxisRaw("Horizontal");
         float speedY = Input.GetAxisRaw("Vertical");
-        PlayerMovement(speedX, speedY);
-        PlayerMovementAnimation(speedX, speedY);
-
-        DidPlayerJumpOff();
-    }
-    private void PlayerMovement(float speedX, float speedY)
-    {
-        PlayerRun(speedX);
-        PlayerJump(speedY);
+        ProcessPlayerRun(speedX);
+        ProcessPlayerRunAnimation(speedX);
+        ProcessPlayerJump(speedY);
+        ProcessPlayerJumpAnimation(speedY);
+        ProcessPlayerCrouch();
+        ProcessInCasePlayerJumpsOffFromPlatform();
     }
 
-    private void PlayerMovementAnimation(float speedX, float speedY)
+    private void FixedUpdate()
     {
-        PlayerRunAnimation(speedX);
-        PlayerJumpAnimation(speedY);
-        PlayerCrouchAnimation();
+        m_PlayerOnTheGround = IsPlayerGrounded();
     }
 
-    private void DidPlayerJumpOff()
+    private void ProcessInCasePlayerJumpsOffFromPlatform()
     {
-        if (transform.position.y < playerDeadIfBelowPos.y)
+        if (transform.position.y < m_PlayerDeadIfBelowPos.y)
         {
-            alive = false;
+            m_Alive = false;
         }
     }
-    private void PlayerRun(float speedX)
+    private void ProcessPlayerRun(float speedX)
     {
-        if (IsGrounded())
+        if (m_PlayerOnTheGround)
         {
             Vector3 position = transform.position;
-            position.x = transform.position.x + speedX * moveSpeed * Time.deltaTime;
+            position.x = transform.position.x + speedX * m_MoveSpeed * Time.deltaTime;
             transform.position = position;
         }
         else  // in the air slow movement in x direction
         {
             Vector3 position = transform.position;
-            position.x = transform.position.x + speedX * moveSpeed / 2 * Time.deltaTime;
+            position.x = transform.position.x + speedX * m_MoveSpeed / 2 * Time.deltaTime;
             transform.position = position;
         }
     }
 
-    private void PlayerJump(float speedY)
+    private void ProcessPlayerJump(float speedY)
     {
-        if(speedY > 0 && IsGrounded())
+        if (speedY > 0 && IsPlayerGrounded())
         {
-            playerRigidbody2d.AddForce(new Vector2(0f, jumpSpeed), ForceMode2D.Impulse);
+            m_PlayerRigidbody2D.AddForce(new Vector2(0f, m_JumpSpeed), ForceMode2D.Impulse);
         }
     }
 
-    private bool IsGrounded()
+    private bool IsPlayerGrounded()
     {
-        RaycastHit2D raycastHit2d = Physics2D.BoxCast(m_BoxCollider2D.bounds.center, m_BoxCollider2D.bounds.size, 0f, Vector2.down, 0.5f, platformLayerMask);
+        RaycastHit2D raycastHit2d = Physics2D.BoxCast(m_PlayerFeetBoxCollider2D.bounds.center, m_PlayerFeetBoxCollider2D.bounds.size, 0f, Vector2.down, 0.5f, platformLayerMask);
         //Debug.Log(raycastHit2d.collider);   
         return raycastHit2d.collider != null; 
     }
 
-    private void PlayerRunAnimation(float speedX)
+    private void ProcessPlayerRunAnimation(float speedX)
     {
-        animator.SetFloat("Speed", Mathf.Abs(speedX));
+        m_Animator.SetFloat("Speed", Mathf.Abs(speedX));
         Vector3 scale = transform.localScale;
         if (speedX < 0)
         {
@@ -108,63 +108,62 @@ public class PlayerController : MonoBehaviour
         transform.localScale = scale;
     }
 
-    private void PlayerJumpAnimation(float speedY)
+    private void ProcessPlayerJumpAnimation(float speedY)
     {
-        if(speedY > 0 && IsGrounded())
+        if(speedY > 0 && IsPlayerGrounded())
         {
-            animator.SetBool("Jump", true);
+            m_Animator.SetBool("Jump", true);
         }
         else
         {
-            animator.SetBool("Jump", false);
+            m_Animator.SetBool("Jump", false);
         }
     }
 
-    private void PlayerCrouchAnimation()
+    private void ProcessPlayerCrouch()
     {
         if (Input.GetKey(KeyCode.LeftControl))
         {
-            animator.SetBool("Crouch", true);
-            playerCapsuleCollider2d.size = new Vector2(boxCollidersize.x, boxCollidersize.y / 2);
-            playerCapsuleCollider2d.offset = new Vector2(boxCollideroffset.x, boxCollideroffset.y - boxCollideroffset.y / 2);
+            m_Animator.SetBool("Crouch", true);
+            m_PlayerCapsuleCollider2D.size = new Vector2(m_CapsuleColliderSize.x, m_CapsuleColliderSize.y / 2);
+            m_PlayerCapsuleCollider2D.offset = new Vector2(m_CapsuleColliderOffset.x, m_CapsuleColliderOffset.y - m_CapsuleColliderOffset.y / 2);
         }
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
-            playerCapsuleCollider2d.size = boxCollidersize;
-            playerCapsuleCollider2d.offset = boxCollideroffset;
-            animator.SetBool("Crouch", false);
+            m_PlayerCapsuleCollider2D.size = m_CapsuleColliderSize;
+            m_PlayerCapsuleCollider2D.offset = m_CapsuleColliderOffset;
+            m_Animator.SetBool("Crouch", false);
         }
     }
 
-    internal void PickupKey()
+    internal void ProcessPlayerPickingupKey()
     {
         Debug.Log("Key Picked up");
         scoreController.IncreaseScore(10);
     }
-     public void DealDamage()
+    public void ProcessDamage()
     {
-        if (!alive) return;
+        if (!m_Alive) return;
 
-        hearts -= 1;
-        Debug.Log("Player had been hurt , hearts: " + hearts);
+        m_HeartCount -= 1;
+        Debug.Log("Player had been hurt , hearts: " + m_HeartCount);
         SoundManager.Instance.PlayPlayerRelatedSound(ESounds.PlayerHurt);
 
         HurtAnimation();
 
-        if (hearts < 0)
+        if (m_HeartCount < 0)
         {
             PlayerDead();
-            //SoundManager.Instance.pla
         }
     }
     void HurtAnimation()
     {
-        animator.SetTrigger("Hurt");
+        m_Animator.SetTrigger("Hurt");
     }
     private void PlayerDead()
     {
         Debug.Log("Player Dead!");
-        alive = false;
+        m_Alive = false;
         SoundManager.Instance.PlayPlayerRelatedSound(ESounds.PlayerDie);
         DeadAnimation();
         gameOverController.ActivateGameOverPanel();
@@ -172,9 +171,8 @@ public class PlayerController : MonoBehaviour
     }
     private void DeadAnimation()
     {
-        animator.SetTrigger("Dead");
+        m_Animator.SetTrigger("Dead");
     }
-
 
     void HandlePlayerFootsteps() // in the animation
     {
@@ -186,7 +184,7 @@ public class PlayerController : MonoBehaviour
         if(collision.gameObject.GetComponent<EnemyController>() != null)
         {
             Debug.Log(collision.gameObject.name);
-            DealDamage();
+            ProcessDamage();
         }
     }
 }

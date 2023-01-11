@@ -10,7 +10,6 @@ public class LevelCompleteController : MonoBehaviour
     {
         if(collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            Debug.Log("Level Complete");
             levelCompletePanel.SetActive(true);
             SoundManager.Instance.PlayLevelCompleteMusic(ESounds.LevelComplete);
             LevelManager.Instance.MarkCurrentLevelComplete();
@@ -19,7 +18,7 @@ public class LevelCompleteController : MonoBehaviour
         }
         else
         {
-            Debug.Log("Level Not Complete");
+            Debug.Log("Level is not Completed");
         }
     }
 

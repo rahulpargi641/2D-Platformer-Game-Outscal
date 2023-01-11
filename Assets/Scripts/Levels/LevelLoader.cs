@@ -15,20 +15,20 @@ public class LevelLoader : MonoBehaviour
 
     private void OnClickLoadLevelButton()
     {
-        E_LevelStatus levelStatus = LevelManager.Instance.GetLevelStatus(LevelName);
+        ELevelStatus levelStatus = LevelManager.Instance.GetLevelStatus(LevelName);
         switch(levelStatus)
         {
-            case E_LevelStatus.Locked:
+            case ELevelStatus.Locked:
                 Debug.Log("Can't play level till you unlock it");
                 SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonClick);
                 break;
 
-            case E_LevelStatus.Unlocked:
+            case ELevelStatus.Unlocked:
                 SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonSelectLevel);
                 SceneManager.LoadScene(LevelName);
                 break;
 
-            case E_LevelStatus.Completed:
+            case ELevelStatus.Completed:
                 SoundManager.Instance.PlayButtonClickSound(ESounds.MenuButtonSelectLevel);
                 SceneManager.LoadScene(LevelName);
                 break;
