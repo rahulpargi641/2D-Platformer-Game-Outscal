@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1894421668969659125}
   - component: {fileID: 1894421668969659128}
   - component: {fileID: 1894421668969659129}
-  - component: {fileID: 1894421668969659130}
+  - component: {fileID: 7024518422164326828}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -121,7 +121,7 @@ Rigidbody2D:
   m_Mass: 10
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 2
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -144,11 +144,11 @@ MonoBehaviour:
   platformLayerMask:
     serializedVersion: 2
     m_Bits: 128
-  deadPos: {x: 0, y: -10}
+  playerDeadIfBelowPos: {x: 0, y: -10}
   moveSpeed: 9
-  jumpSpeed: 5
---- !u!61 &1894421668969659130
-BoxCollider2D:
+  jumpSpeed: 15
+--- !u!70 &7024518422164326828
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -160,19 +160,9 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.05546856, y: 1.0057545}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.42, y: 0.1}
-    oldSize: {x: 3.7534883, y: 2.8325582}
-    newSize: {x: 3.7534883, y: 2.8325582}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.62684774, y: 1.988491}
-  m_EdgeRadius: 0
+  m_Offset: {x: -0.009223938, y: 0.97453547}
+  m_Size: {x: 0.82353973, y: 2.2108774}
+  m_Direction: 0
 --- !u!1 &1894421670862352990
 GameObject:
   m_ObjectHideFlags: 0

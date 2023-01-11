@@ -1,20 +1,35 @@
 //using System.Collections;
 //using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelCompleteController : MonoBehaviour
 {
+    public GameObject levelCompletePanel;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.gameObject.GetComponent<PlayerController>() !=null)
         {
             Debug.Log("Level Complete");
-            SceneManager.LoadScene("Scene2");
+            levelCompletePanel.SetActive(true);
+            LevelManager.Instance.MarkCurrentLevelComplete();
+            StartCoroutine(LoadNextLevel());
+
         }
         else
         {
             Debug.Log("Level Not Complete");
         }
     }
+
+    IEnumerator LoadNextLevel()
+    {
+        yield return new WaitForSeconds(3f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        levelCompletePanel.SetActive(false);
+    }
+
+
 }
