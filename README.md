@@ -26,7 +26,8 @@
     - Implemented a Level Manager class as a singleton for level unlocking system. 
 
 #### Game Design
-    - Utilized Tilemap to desgin a level.
+    - For rapid level design, Unity's Tilemap was utilized, enabling expedited level creation by 
+      painting tiles and specifying tilemap rules.
     
 ### Gameplay Demonstration
     - For a visual demonstration of the gameplay, watch video on YouTube:
