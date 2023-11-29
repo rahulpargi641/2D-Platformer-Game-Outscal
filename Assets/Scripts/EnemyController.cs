@@ -7,14 +7,4 @@ public class EnemyController : MonoBehaviour
     {
         SoundManager.Instance.PlayEnemyPatrolSound(ESounds.ChomperWalk);
     }
-   
-    public void StartAttack()
-    {
-
-    }
-
-    public void EndAttack()
-    {
-
-    }
 }

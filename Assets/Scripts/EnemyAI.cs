@@ -34,6 +34,7 @@ public class EnemyAI : MonoBehaviour
             ProcessEnemyFlip();
         }
     }
+
     private void ProcessEnemyFlip()
     {
         parentTransform.localScale = new Vector2(-Mathf.Sign(parentRigidbody2D.velocity.x), Mathf.Sign(parentRigidbody2D.velocity.y));

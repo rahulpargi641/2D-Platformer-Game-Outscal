@@ -15,7 +15,7 @@ public class SoundManager : MonoBehaviour
     public AudioSource audioLevelRelated;
     public AudioSource audioInteract;
     public AudioSource audioPlayerRelated;
-    public SoundType[] m_SoundType;
+    public SoundType[] m_SoundTypes;
  
     private void Awake()
     {
@@ -62,9 +62,7 @@ public class SoundManager : MonoBehaviour
         {
             Debug.LogError("Clip not found for sound types" + sound);
         }
-
     }
-
 
     public void PlayPlayerFootstepsSound(ESounds sound)
     {
@@ -142,7 +140,7 @@ public class SoundManager : MonoBehaviour
     }
     private AudioClip GetSoundClip(ESounds sound)
     {
-        SoundType item = Array.Find(m_SoundType, item => item.ES_Sound == sound);
+        SoundType item = Array.Find(m_SoundTypes, item => item.ES_Sound == sound);
         if (item != null)
             return item.m_AudioClip;
         else

@@ -7,6 +7,7 @@ public class LobbyController : MonoBehaviour
     public Button m_QuitButton;
     [SerializeField] GameObject m_MainMenuGO;
     [SerializeField] GameObject m_LevelSelectionMenuGO;
+
     private void Awake()
     {
        m_StartButton.onClick.AddListener(PlayGame);
@@ -20,6 +21,7 @@ public class LobbyController : MonoBehaviour
         m_MainMenuGO.SetActive(false);
         m_LevelSelectionMenuGO.SetActive(true);
     }
+
     private void QuitGame()
     {
         Application.Quit();
