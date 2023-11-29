@@ -1,4 +1,4 @@
-# Flappy Bird
+# The Explorer
 
 ### Introduction
     Ellen: The Explorer is a 2D platformer game where the player explores the world to find a key that
