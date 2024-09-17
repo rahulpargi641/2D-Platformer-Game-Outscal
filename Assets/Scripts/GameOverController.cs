@@ -14,7 +14,6 @@ public class GameOverController : MonoBehaviour
        restartButton.onClick.AddListener(ReloadLevel);
        quitButton.onClick.AddListener(LoadLobbyScene);
     }
-
     private void LoadLobbyScene()
     {
         SceneManager.LoadScene(0);
